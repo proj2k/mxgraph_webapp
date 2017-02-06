@@ -45,7 +45,8 @@ public class ExportServlet extends HttpServlet
 	private transient SAXParserFactory parserFactory = SAXParserFactory.newInstance();
 
 	/**
-	 * Cache for all images.
+	 * Cache for all images
+	 * .
 	 */
 	protected transient Hashtable<String, Image> imageCache = new Hashtable<String, Image>();
 
