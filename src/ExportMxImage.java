@@ -1,103 +1,146 @@
-import com.mxgraph.canvas.mxGraphicsCanvas2D;
-import com.mxgraph.canvas.mxICanvas2D;
-import com.mxgraph.reader.mxDomOutputParser;
-import com.mxgraph.reader.mxSaxOutputHandler;
+import com.mxgraph.io.mxCodec;
+import com.mxgraph.reader.mxGraphViewImageReader;
+import com.mxgraph.util.mxCellRenderer;
 import com.mxgraph.util.mxUtils;
 import com.mxgraph.util.mxXmlUtils;
+import com.mxgraph.view.mxGraph;
+import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
 
 import javax.imageio.ImageIO;
-import javax.servlet.ServletOutputStream;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParserFactory;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.StringReader;
+import java.net.URLDecoder;
 
 /**
  * Created by kimjaesu on 2017. 2. 4..
  */
 public class ExportMxImage extends HttpServlet{
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        try {
-            exportImage(resp.getOutputStream());
-        } catch (ParserConfigurationException e) {
-            e.printStackTrace();
-        } catch (SAXException e) {
-            e.printStackTrace();
+    /**
+     *
+     */
+    protected void doGet(HttpServletRequest request,
+                         HttpServletResponse response) throws ServletException, IOException
+    {
+        HttpSession session = request.getSession();
+
+        if (session != null)
+        {
+//            Object xml = session.getAttribute("xml");
+            String xml = URLDecoder.decode(request.getParameter("xml"), "UTF-8");
+            String format = request.getParameter("format");
+
+            // PNG seems to have the best compression ratio for images with a
+            // lof of white space, as is the case with most graphs/diagrams.
+            if (format == null)
+            {
+                format = "png";
+            }
+
+            if (xml != null)
+            {
+                try
+                {
+                    response.setContentType("image/" + format);
+
+                    // Uses a white background color for browsers such as IE6, which
+                    // do not handle the transparent PNG background correctly.
+                    streamImage(Color.WHITE, String.valueOf(xml), format,
+                            response.getOutputStream());
+                    response.setStatus(HttpServletResponse.SC_OK);
+                    //((Request) request).setHandled(true);
+                }
+                catch (Exception e)
+                {
+                    throw new ServletException(e);
+                }
+            }
+            else
+            {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            }
         }
     }
 
-    public void exportImage(ServletOutputStream out) throws IOException, ParserConfigurationException, SAXException {
-        String xml = mxUtils.readFile(this.getClass().getResource(
-                "/xml/imageoutput.xml").getPath());
-        int w = 704;
-        int h = 685;
+    /**
+     * Streams the given XML string as a PNG image into the given stream.
+     *
+     * @param xml
+     * @param stream
+     * @throws IOException
+     * @throws SAXException
+     * @throws ParserConfigurationException
+     */
+    protected void streamImage(Color bg, String xml, String format,
+                               OutputStream stream) throws ParserConfigurationException,
+            SAXException, IOException
+    {
+        try
+        {
 
-        long t0 = System.currentTimeMillis();
-        BufferedImage image = mxUtils.createBufferedImage(w, h, Color.WHITE);
+            Document doc = mxXmlUtils.parseXml(mxUtils.readFile(this.getClass().getResource("/xml/graphmodel.xml")
+                    .getPath()));
 
-        // Creates handle and configures anti-aliasing
-        Graphics2D g2 = image.createGraphics();
-        mxUtils.setAntiAlias(g2, true, true);
-        long t1 = System.currentTimeMillis();
+            mxGraph graph = new mxGraph();
+            mxCodec codec = new mxCodec(doc);
+            codec.decode(doc.getDocumentElement(), graph.getModel());
 
-        // Parses request into graphics canvas
-        mxGraphicsCanvas2D gc2 = new mxGraphicsCanvas2D(g2);
-        parseXmlSax(xml, gc2);
-        long t2 = System.currentTimeMillis();
-
-        ImageIO.write(image, "png", out);
-        long t3 = System.currentTimeMillis();
+            ImageIO.write(mxCellRenderer.createBufferedImage(graph, null, 1, null, true, null), "png", new File("oldimageexport.png"));
 
 
-        System.out.println("Create img: " + (t1 - t0) + " ms, Parse XML: "
-                + (t2 - t1) + " ms, Write File: " + (t3 - t2));
+
+//            mxGraphViewImageReader reader = new mxGraphViewImageReader(bg, 4,
+//                    true, true);
+//            InputSource inputSource = new InputSource(new StringReader(xml));
+//            BufferedImage image = mxGraphViewImageReader.convert(inputSource,
+//                    reader);
+
+//            ImageIO.write(image, format, stream);
+            ImageIO.write(mxCellRenderer.createBufferedImage(graph, null, 1, null, true, null), format, stream);
+        }
+        catch (OutOfMemoryError error)
+        {
+            error.printStackTrace();
+        }
     }
 
     /**
-     * Creates and returns the image for the given request.
      *
-     * @param request
-     * @return
-     * @throws SAXException
-     * @throws ParserConfigurationException
-     * @throws IOException
      */
-    protected void parseXmlDom(String xml, mxICanvas2D canvas)
+    protected void doPost(HttpServletRequest request,
+                          HttpServletResponse response) throws ServletException, IOException
     {
-        new mxDomOutputParser(canvas).read(mxXmlUtils.parseXml(xml)
-                .getDocumentElement().getFirstChild());
-    }
+        String xml = URLDecoder.decode(request.getParameter("xml"), "UTF-8");
 
-    /**
-     * Creates and returns the image for the given request.
-     *
-     * @param request
-     * @return
-     * @throws SAXException
-     * @throws ParserConfigurationException
-     * @throws IOException
-     */
-    protected void parseXmlSax(String xml, mxICanvas2D canvas)
-            throws SAXException, ParserConfigurationException, IOException
-    {
-        // Creates SAX handler for drawing to graphics handle
-        mxSaxOutputHandler handler = new mxSaxOutputHandler(canvas);
+        if (xml != null)
+        {
+            HttpSession session = request.getSession(true);
 
-        // Creates SAX parser for handler
-        XMLReader reader = SAXParserFactory.newInstance().newSAXParser()
-                .getXMLReader();
-        reader.setContentHandler(handler);
-
-        // Renders XML data into image
-        reader.parse(new InputSource(new StringReader(xml)));
+            try
+            {
+                session.setAttribute("xml", xml);
+                response.setStatus(HttpServletResponse.SC_OK);
+                //((Request) request).setHandled(true);
+            }
+            catch (Exception e)
+            {
+                throw new ServletException(e);
+            }
+        }
+        else
+        {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        }
     }
 }
