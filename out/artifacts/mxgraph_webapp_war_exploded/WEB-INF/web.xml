@@ -31,6 +31,10 @@
         <servlet-class>ExportMxImage</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>saveDiagram</servlet-name>
+        <servlet-class>SaveDiagram</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>H2Console</servlet-name>
         <servlet-class>org.h2.server.web.WebServlet</servlet-class>
         <!--
@@ -56,5 +60,9 @@
     <servlet-mapping>
         <servlet-name>exportMxImage</servlet-name>
         <url-pattern>/exportMxImage</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>saveDiagram</servlet-name>
+        <url-pattern>/saveDiagram</url-pattern>
     </servlet-mapping>
 </web-app>
