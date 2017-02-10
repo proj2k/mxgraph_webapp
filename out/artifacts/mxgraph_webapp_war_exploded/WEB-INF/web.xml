@@ -5,7 +5,7 @@
          version="3.1">
     <context-param>
         <param-name>db.url</param-name>
-        <param-value>jdbc:h2:mem:test;INIT=runscript from 'classpath:scripts/create.sql'\;runscript from 'classpath:scripts/init.sql'</param-value>
+        <param-value>jdbc:h2:mem:test;INIT=runscript from 'classpath:scripts/schema.sql'\;runscript from 'classpath:scripts/table.sql'\;runscript from 'classpath:scripts/sequence.sql'\;runscript from 'classpath:scripts/data.sql'</param-value>
     </context-param>
     <context-param>
         <param-name>db.user</param-name>
@@ -33,6 +33,10 @@
     <servlet>
         <servlet-name>saveDiagram</servlet-name>
         <servlet-class>SaveDiagram</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>serverView</servlet-name>
+        <servlet-class>ServerView</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>H2Console</servlet-name>
@@ -64,5 +68,9 @@
     <servlet-mapping>
         <servlet-name>saveDiagram</servlet-name>
         <url-pattern>/saveDiagram</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>serverView</servlet-name>
+        <url-pattern>/serverView</url-pattern>
     </servlet-mapping>
 </web-app>

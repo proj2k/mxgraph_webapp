@@ -3,6 +3,25 @@ import java.awt.image.BufferedImage;
 public class Constants
 {
 	/**
+	 * 데이터베이스 접속 jdbc driver
+	 */
+	public static final String JDBC_DRIVER = "org.h2.Driver";
+	/**
+	 * 데이터베이스 접속 URL
+	 */
+	public static final String DB_URL = "jdbc:h2:mem:test";
+
+	/**
+	 * 데이터베이스 접속 유저
+	 */
+	public static final String DB_USER = "sa";
+
+	/**
+	 * 데이터베이스 접속 암호
+	 */
+	public static final String DB_PASSWORD = "sa";
+
+	/**
 	 * Contains an empty image.
 	 */
 	public static BufferedImage EMPTY_IMAGE;

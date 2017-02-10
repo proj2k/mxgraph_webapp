@@ -2,16 +2,15 @@
  * Copyright (c) 2011-2017, JGraph Ltd
  */
 
-import com.mxgraph.canvas.mxGraphicsCanvas2D;
-import com.mxgraph.canvas.mxICanvas2D;
-import com.mxgraph.reader.mxSaxOutputHandler;
-import com.mxgraph.util.mxUtils;
-import com.mxpdf.text.Document;
-import com.mxpdf.text.DocumentException;
-import com.mxpdf.text.pdf.PdfWriter;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.util.Hashtable;
 
 import javax.imageio.ImageIO;
 import javax.servlet.ServletException;
@@ -20,13 +19,18 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.StringReader;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.util.Hashtable;
+
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
+
+import com.mxpdf.text.Document;
+import com.mxpdf.text.DocumentException;
+import com.mxpdf.text.pdf.PdfWriter;
+import com.mxgraph.canvas.mxGraphicsCanvas2D;
+import com.mxgraph.canvas.mxICanvas2D;
+import com.mxgraph.reader.mxSaxOutputHandler;
+import com.mxgraph.util.mxUtils;
 
 /**
  * Servlet implementation class ImageServlet.
@@ -45,8 +49,7 @@ public class ExportServlet extends HttpServlet
 	private transient SAXParserFactory parserFactory = SAXParserFactory.newInstance();
 
 	/**
-	 * Cache for all images
-	 * .
+	 * Cache for all images.
 	 */
 	protected transient Hashtable<String, Image> imageCache = new Hashtable<String, Image>();
 
