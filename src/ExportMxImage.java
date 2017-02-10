@@ -9,6 +9,8 @@ import com.mxgraph.util.mxUtils;
 import com.mxpdf.text.Document;
 import com.mxpdf.text.DocumentException;
 import com.mxpdf.text.pdf.PdfWriter;
+import common.Constants;
+import dao.MxGraphDao;
 import model.MxGraphSmartEditor;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -118,7 +120,7 @@ public class ExportMxImage extends HttpServlet
         Long mxGraphSeq = Long.valueOf(request.getParameter("mxGraphSeq"));
         MxGraphSmartEditor mxGraphSmartEditor = null;
         try {
-            mxGraphSmartEditor = getImageSpec(mxGraphSeq);
+            mxGraphSmartEditor = MxGraphDao.getImageSpec(mxGraphSeq);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (SQLException e) {
@@ -310,46 +312,4 @@ public class ExportMxImage extends HttpServlet
         return g2c;
     }
 
-    /**
-     *
-     * @param mxGraphSeq
-     * @return
-     * @throws ClassNotFoundException
-     * @throws SQLException
-     * @throws UnsupportedEncodingException
-     */
-    public MxGraphSmartEditor getImageSpec(long mxGraphSeq) throws ClassNotFoundException, SQLException, UnsupportedEncodingException {
-        Class.forName(Constants.JDBC_DRIVER);
-        Connection conn = null;
-        ResultSet resultSet = null;
-        PreparedStatement preparedStatement = null;
-        MxGraphSmartEditor mxGraphSmartEditor = new MxGraphSmartEditor();
-        try {
-            conn = DriverManager.
-                    getConnection(Constants.DB_URL, Constants.DB_USER, Constants.DB_PASSWORD);
-            preparedStatement = conn.prepareStatement("SELECT MODEL_XML, IMAGE_XML, IMAGE_WIDTH, IMAGE_HEIGHT, IMAGE_BG_COLOR " +
-                    "FROM TEST_SCHEMA.MX_GRAPH WHERE MX_GRAPH_SEQ = ?");
-            preparedStatement.setLong(1, mxGraphSeq);
-            resultSet = preparedStatement.executeQuery();
-            if(resultSet.next()) {
-                mxGraphSmartEditor.setImageXml(URLDecoder.decode(resultSet.getString("IMAGE_XML"), "UTF-8"));
-                mxGraphSmartEditor.setImageWidth(resultSet.getInt("IMAGE_WIDTH"));
-                mxGraphSmartEditor.setImageHeight(resultSet.getInt("IMAGE_HEIGHT"));
-                mxGraphSmartEditor.setImageBgColor(resultSet.getString("IMAGE_BG_COLOR"));
-            }
-            return mxGraphSmartEditor;
-
-        }
-        finally {
-            if(resultSet != null) {
-                resultSet.close();
-            }
-            if(preparedStatement != null) {
-                preparedStatement.close();
-            }
-            if(conn != null) {
-                conn.close();
-            }
-        }
-    }
 }
