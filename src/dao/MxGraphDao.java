@@ -8,10 +8,17 @@ import java.net.URLDecoder;
 import java.sql.*;
 
 /**
- * Created by kimjaesu on 2017. 2. 11..
+ * 다이어그램 데이터베이스 접근
+ * Created by kimjaesu on 2017. 2. 4..
  */
 public class MxGraphDao {
 
+    /**
+     * 다이어그램을 추가 또는 변경함. 이 때 다이어그램식별순번(mxGraphSeq)로 판단함.
+     * @param mxGraphSmartEditor
+     * @return 저장된 다이어그램
+     * @throws Exception
+     */
     public static MxGraphSmartEditor saveData(MxGraphSmartEditor mxGraphSmartEditor) throws Exception{
         Connection conn = null;
         int saveCount = 0;
@@ -39,6 +46,12 @@ public class MxGraphDao {
         }
     }
 
+    /**
+     * 새로은 다이어그램식별순번을 생성, 조회함.
+     * @param conn
+     * @return 다이어그램식별순번
+     * @throws SQLException
+     */
     public static long getNewMxGraphSeq(Connection conn) throws SQLException {
         Statement statement = null;
         ResultSet resultSet = null;
@@ -59,6 +72,13 @@ public class MxGraphDao {
         }
     }
 
+    /**
+     * 새로운 다이어그램을 추가함.
+     * @param conn 데이터베이스연결
+     * @param mxGraphSmartEditor 추가할 다이어그램
+     * @return 추가 건 수
+     * @throws Exception
+     */
     public static int insertData(Connection conn, MxGraphSmartEditor mxGraphSmartEditor) throws Exception {
         PreparedStatement preparedStatement = null;
 
@@ -85,6 +105,13 @@ public class MxGraphDao {
 
     }
 
+    /**
+     * 다이어그램을 수정함.
+     * @param conn 데이터베이스연결
+     * @param mxGraphSmartEditor 수정할 다이어그램
+     * @return 수정 건 수
+     * @throws Exception
+     */
     public static int updateData(Connection conn, MxGraphSmartEditor mxGraphSmartEditor) throws Exception {
         PreparedStatement preparedStatement = null;
         try {
@@ -114,9 +141,9 @@ public class MxGraphDao {
     }
 
     /**
-     *
-     * @param mxGraphSeq
-     * @return
+     * 다이어그램의 이미지정보를 조회함
+     * @param mxGraphSeq 다이어그램식별순번
+     * @return 다아이그램의 이미지정보
      * @throws ClassNotFoundException
      * @throws SQLException
      * @throws UnsupportedEncodingException
@@ -154,12 +181,26 @@ public class MxGraphDao {
         }
     }
 
+    /**
+     * 데이터베이스에 연결함
+     * @return 데이터베이스 연결
+     * @throws SQLException
+     * @throws ClassNotFoundException
+     */
     private static Connection getConnection() throws SQLException, ClassNotFoundException {
         Class.forName(Constants.JDBC_DRIVER);
         return DriverManager.
                 getConnection(Constants.DB_URL, Constants.DB_USER, Constants.DB_PASSWORD);
     }
 
+    /**
+     * 다이어그램 관리용 xml을 조회함
+     * @param mxGraphSeq
+     * @return 다이어그램 관리용 xml
+     * @throws SQLException
+     * @throws ClassNotFoundException
+     * @throws UnsupportedEncodingException
+     */
     public static String getModelXml(long mxGraphSeq) throws SQLException, ClassNotFoundException, UnsupportedEncodingException {
         Connection conn = null;
         ResultSet resultSet = null;

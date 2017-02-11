@@ -60,7 +60,7 @@ nhn.husky.EZCreator.createInIFrame({
 	fOnAppLoad : function(){
 		//예제 코드
 		oEditors.getById["ir1"].exec("PASTE_HTML", ["<img name='mxImage1' id='mxImage1' src='/exportMxImage?mxGraphSeq=1' />"]);
-		fAddEventForBizflow(oEditors);
+		fSeAddEventForBizflow(oEditors);
 	},
 	fCreator: "createSEditor2"
 });
@@ -98,7 +98,7 @@ function setDefaultFont() {
 	/**
 	 * 에디터에서 다이어그램 이미지를 더블클릭 할 경우 이벤트 실행
 	 */
-    function fAddEventForBizflow(oEditors) {
+    function fSeAddEventForBizflow(oEditors) {
         oEditors.getById["ir1"].getWYSIWYGDocument().addEventListener('dblclick', function(e) {
             e = e || window.event;
             var target = e.target || e.srcElement;
@@ -110,7 +110,13 @@ function setDefaultFont() {
 
     }
 
-    function fApplyDiagram(mxGraphSeq) {
+    /**
+	 * 편집된 다이어그램을 에디터에 적용함.
+	 * 에디터 내에 식별순번으로 조합된 id(ex. mxImage2)를 찾아
+	 * 존재하면 에디터수정이벤트만 발생, 아니면 이미지를 추가함
+     * @param mxGraphSeq
+     */
+    function fSeApplyDiagram(mxGraphSeq) {
         var sHTML = oEditors.getById["ir1"].getIR();
             var mxGraphObject = oEditors.getById["ir1"].getWYSIWYGDocument().getElementById('mxImage'+mxGraphSeq);
             if(mxGraphObject) {

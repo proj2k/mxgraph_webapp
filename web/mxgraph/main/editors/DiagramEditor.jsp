@@ -10,7 +10,14 @@
 <%@ page import="java.sql.SQLException" %>
 <%@ page import="org.apache.commons.lang3.StringEscapeUtils" %>
 <%
-    long mxGraphSeq = Long.parseLong(request.getParameter("mxGraphSeq"));
+    String tmp = request.getParameter("mxGraphSeq");
+    long mxGraphSeq;
+    if(tmp == null) {
+        mxGraphSeq = -1;
+    }
+    else {
+        mxGraphSeq = Long.parseLong(request.getParameter("mxGraphSeq"));
+    }
     String modelXml = "";
     try {
         modelXml = MxGraphDao.getModelXml(mxGraphSeq);
@@ -130,7 +137,7 @@
             sourceInput.checked = false;
 
             /* 스마트에디터에서 전달된 다이어그램 xml 적용 */
-            setModelFromSmartEditor(editor);
+            fDeSetModelFromSmartEditor(editor);
 
             var funct = function(editor)
             {
@@ -335,7 +342,7 @@
             /**
              * 스마트에디터에서 전달된 다이어그램 xml 적용
              */
-            function setModelFromSmartEditor(editor) {
+            function fDeSetModelFromSmartEditor(editor) {
                 var mxGraphSeq = document.getElementById('mxGraphSeq').value;
                 var xml = "<%=StringEscapeUtils.escapeEcmaScript(modelXml)%>";
                 var doc = mxUtils.parseXml(xml);
@@ -345,7 +352,7 @@
             /**
              * 이미지 변환용 XML 생성
              */
-            function getImageXml(ediotr) {
+            function fDeGetImageXml(ediotr) {
                 var imageInfo = {};
                 var graph = editor.graph;
                 var scale = graph.view.scale;
@@ -388,7 +395,7 @@
              * @param imageXml 이미지출력용 xml
              * @param mxGraphSeq 다이어그램식별순번
              */
-            function fSaveDiagram(modelXml, imageInfo, mxGraphSeq)
+            function fDeSaveDiagram(modelXml, imageInfo, mxGraphSeq)
             {
                 //console.log(mxGroupXml);
                 //console.log(imageXml);
@@ -419,7 +426,7 @@
                         if (httpRequest.status === 200) {
                             var mxGraphSeq = httpRequest.responseText;
                             document.getElementById('mxGraphSeq').value = mxGraphSeq;
-                            opener.parent.fApplyDiagram(mxGraphSeq);
+                            opener.parent.fSeApplyDiagram(mxGraphSeq);
                         } else {
                             alert('There was a problem with the request.');
                         }
@@ -440,18 +447,11 @@
             editor.addListener(mxEvent.SAVE, function(editor) {
                 var enc = new mxCodec();
                 var node = enc.encode(editor.graph.getModel());
-                //editor.graph.fit();
-                //editor.graph.view.rendering = true;
-                //editor.graph.refresh();
-
                 var modelXml = mxUtils.getXml(node);
-                var imageInfo = getImageXml(editor);
+                var imageInfo = fDeGetImageXml(editor);
 
                 var mxGraphSeq = document.getElementById('mxGraphSeq').value;
-                fSaveDiagram(modelXml, imageInfo, mxGraphSeq);
-//                new mxXmlRequest("/saveDiagram", 'filename=' + "" + '&format=' + "" +
-//                    "" + '&w=' + "" + '&h=' + "" + '&imageXml=' + encodeURIComponent(imageInfo.xml)).
-//                simulate(document, '_self');
+                fDeSaveDiagram(modelXml, imageInfo, mxGraphSeq);
             });
             /**
              *  스마트에디터에 적용 end

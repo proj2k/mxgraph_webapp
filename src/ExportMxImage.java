@@ -170,22 +170,6 @@ public class ExportMxImage extends HttpServlet
     }
 
     /**
-     * Gets the XML request parameter.
-     */
-    protected String getRequestXml(HttpServletRequest request) throws IOException, UnsupportedEncodingException
-    {
-        String xml = request.getParameter("xml");
-
-        // Decoding is optional (no plain text values allowed)
-        if (xml != null && xml.startsWith("%3C"))
-        {
-            xml = URLDecoder.decode(xml, "UTF-8");
-        }
-
-        return xml;
-    }
-
-    /**
      * @throws ParserConfigurationException
      * @throws SAXException
      * @throws IOException

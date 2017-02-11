@@ -4,7 +4,7 @@ import java.util.Date;
 
 /**
  * mxgraph 다이어그램 정보
- * Created by kimjaesu on 2017. 2. 9..
+ * Created by kimjaesu on 2017. 2. 4..
  */
 public class MxGraphSmartEditor {
 

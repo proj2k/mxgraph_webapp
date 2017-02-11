@@ -27,7 +27,7 @@ nhn.husky.SE_bizflow = jindo.$Class({
       if(bizflowImg) {
         bizflowImg.remove();
       }
-      window.open('mxgraph/main/editors/diagrameditor.html','bizflowNew');
+      window.open('/mxgraph/main/editors/DiagramEditor.jsp','bizflowNew');
     },
     $AFTER_BIZFLOW_NEW: function(a, b, c) {
         // console.log(this.oApp.getWYSIWYGDocument().querySelector('#canvas'));

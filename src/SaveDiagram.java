@@ -33,6 +33,15 @@ public class SaveDiagram extends HttpServlet {
 
     }
 
+    /**
+     * 화면에서 다이어그램정보를 받아 데이터베이스에 저장함.
+     * 이 때 xml 문자열은 인코딩을 두 번 함.
+     * 브라우저에서 디코딩이 한 번 일어나므로 서버에서 utf8 인코딩이 되지 않으면 한글 인식이 안됨.
+     * 따라서 디코딩을 소스내에서 하도록 함.
+     * @param req
+     * @return
+     * @throws UnsupportedEncodingException
+     */
     private MxGraphSmartEditor getMxGraphSmartEditor(HttpServletRequest req) throws UnsupportedEncodingException {
         HttpSession session = req.getSession();
 
@@ -53,7 +62,7 @@ public class SaveDiagram extends HttpServlet {
         int imageWidth = Integer.parseInt(req.getParameter("imageWidth"));
         int imageHeight = Integer.parseInt(req.getParameter("imageHeight"));
         String imageBgColor = req.getParameter("imageBgColor");
-        if(mxGraphSeq == null || mxGraphSeq.equals("null")) {
+        if(mxGraphSeq == null || mxGraphSeq.equals("null") || Long.valueOf(mxGraphSeq) < 1) {
             mxGraphSmartEditor.setNew(true);
         }
         else {
