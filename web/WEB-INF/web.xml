@@ -50,10 +50,6 @@
         <servlet-class>SaveDiagram</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>serverView</servlet-name>
-        <servlet-class>ServerView</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>getDiagram</servlet-name>
         <servlet-class>GetDiagram</servlet-class>
     </servlet>
@@ -72,10 +68,6 @@
     <servlet-mapping>
         <servlet-name>saveDiagram</servlet-name>
         <url-pattern>/saveDiagram</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>serverView</servlet-name>
-        <url-pattern>/serverView</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>getDiagram</servlet-name>
