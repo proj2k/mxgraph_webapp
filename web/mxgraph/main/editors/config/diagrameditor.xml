@@ -130,7 +130,7 @@
 				<add as="shadow" value="0"/>
 				<add as="strokeColor" value="none"/>
 				<add as="fillColor" value="none"/>
-				<add as="gradientColor" value="none"/>
+				<!--<add as="gradientColor" value="none"/>-->
 			</add>
 			<add as="defaultVertex" extend="text">
 				<add as="shape" value="rectangle"/>
@@ -140,7 +140,7 @@
 				<add as="shadow" value="1"/>
 				<add as="strokeColor" value="#C3D9FF"/>
 				<add as="fillColor" value="#C3D9FF"/>
-				<add as="gradientColor" value="white"/>
+				<!--<add as="gradientColor" value="white"/>-->
 			</add>
 			<add as="group">
 				<add as="shape" value="rectangle"/>
