@@ -117,15 +117,16 @@ function setDefaultFont() {
      * @param mxGraphSeq
      */
     function fSeApplyDiagram(mxGraphSeq) {
+        var sImagePrefix = "/exportMxImage?mxGraphSeq=";
         var sHTML = oEditors.getById["ir1"].getIR();
-            var mxGraphObject = oEditors.getById["ir1"].getWYSIWYGDocument().getElementById('mxImage'+mxGraphSeq);
-            if(mxGraphObject) {
-                oEditors.getById["ir1"].exec('PASTE_HTML', [""]);
-            }
-            else {
-                var sHTML = "<img name='mxImage"+mxGraphSeq+"' id='mxImage"+mxGraphSeq+"' src='/exportMxImage?mxGraphSeq="+mxGraphSeq+"' />";
-                oEditors.getById["ir1"].exec('PASTE_HTML', [sHTML]);
-            }
+		var mxGraphObject = oEditors.getById["ir1"].getWYSIWYGDocument().getElementById('mxImage'+mxGraphSeq);
+		if(mxGraphObject) {
+			mxGraphObject.src = sImagePrefix + mxGraphSeq + "&" + Math.random();
+		}
+		else {
+			var sHTML = "<img name='mxImage" + mxGraphSeq + "' id='mxImage" + mxGraphSeq + "' src='" + sImagePrefix + mxGraphSeq + "' />";
+			oEditors.getById["ir1"].exec('PASTE_HTML', [sHTML]);
+		}
     }
 
 
