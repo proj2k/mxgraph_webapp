@@ -109,23 +109,23 @@
                 f(editor);
             }
 
-            // Changes the zoom on mouseWheel events
-            mxEvent.addMouseWheelListener(function (evt, up)
-            {
-                if (!mxEvent.isConsumed(evt))
-                {
-                    if (up)
-                    {
-                        editor.execute('zoomIn');
-                    }
-                    else
-                    {
-                        editor.execute('zoomOut');
-                    }
-
-                    mxEvent.consume(evt);
-                }
-            });
+//            // Changes the zoom on mouseWheel events
+//            mxEvent.addMouseWheelListener(function (evt, up)
+//            {
+//                if (!mxEvent.isConsumed(evt))
+//                {
+//                    if (up)
+//                    {
+//                        editor.execute('zoomIn');
+//                    }
+//                    else
+//                    {
+//                        editor.execute('zoomOut');
+//                    }
+//
+//                    mxEvent.consume(evt);
+//                }
+//            });
 
 
 
@@ -482,7 +482,7 @@
                 <!-- Toolbar Here -->
             </td>
             <td valign="top" style="border-width:1px;border-style:solid;border-color:black;">
-                <div id="graph" style="position:relative;height:560px;width:684px;overflow:hidden;cursor:default;">
+                <div id="graph" style="position:relative;height:560px;width:684px;overflow:scroll;cursor:default;">
                     <!-- Graph Here -->
                     <center id="splash" style="padding-top:230px;">
                         <img src="images/loading.gif">
