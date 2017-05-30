@@ -445,6 +445,10 @@
              * 저장버튼 이벤트 추가
              */
             editor.addListener(mxEvent.SAVE, function(editor) {
+
+                editor.graph.stopEditing(false); // 수정모드 중지
+                //editor.graph.clearSelection(); // 선택상테 해제하고 싶을 때
+
                 var enc = new mxCodec();
                 var node = enc.encode(editor.graph.getModel());
                 var modelXml = mxUtils.getXml(node);
